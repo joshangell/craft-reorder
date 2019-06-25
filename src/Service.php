@@ -11,6 +11,7 @@ use craft\commerce\elements\Variant;
 use craft\commerce\models\LineItem;
 
 use spicyweb\reorder\enums\LineItemStatus;
+use spicyweb\reorder\events\CopyLineItemEvent;
 
 /**
  * Class Service
@@ -21,6 +22,18 @@ use spicyweb\reorder\enums\LineItemStatus;
  */
 class Service extends Component
 {
+    // Constants
+    // =========================================================================
+    /**
+     * @event CopyLineItemEvent The event that is triggered when ReOrder
+     *                          has just copied the line item over onto
+     *                          the new cart
+     */
+    const EVENT_COPY_LINE_ITEM = 'copyLineItem';
+
+    // Public Methods
+    // =========================================================================
+
 	/**
 	 * Copies line items from an order to the user's cart.
 	 *
@@ -83,6 +96,13 @@ class Service extends Component
 				}
 
 				$cart->addLineItem($lineItem);
+
+                // Raise an event to allow plugins and modules to do something
+                $event = new CopyLineItemEvent([
+                    'originalLineItem' => $item,
+                    'newLineItem' => $lineItem,
+                ]);
+                $this->trigger(self::EVENT_COPY_LINE_ITEM, $event);
 			}
 		}
 
