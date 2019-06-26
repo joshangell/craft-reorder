@@ -97,6 +97,9 @@ class Service extends Component
 
 				$cart->addLineItem($lineItem);
 
+                // Save the line item so it gets an ID
+                $commerce->getLineItems()->saveLineItem($lineItem, false);
+
                 // Raise an event to allow plugins and modules to do something
                 $event = new CopyLineItemEvent([
                     'originalLineItem' => $item,
