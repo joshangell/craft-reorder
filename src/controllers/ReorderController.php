@@ -2,7 +2,7 @@
 namespace spicyweb\reorder\controllers;
 
 use Craft;
-use craft\web\Controller;
+use craft\commerce\controllers\BaseFrontEndController;
 use craft\commerce\Plugin as Commerce;
 
 use spicyweb\reorder\Plugin as ReOrder;
@@ -15,8 +15,19 @@ use spicyweb\reorder\enums\OrderStatus;
  * @author Spicy Web <craft@spicyweb.com.au>
  * @since 1.0.0
  */
-class ReorderController extends Controller
+class ReorderController extends BaseFrontEndController
 {
+    // Properties
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    protected $allowAnonymous = false;
+
+    // Public Methods
+    // =========================================================================
+
 	/**
 	 * Recreates a user's previous order's line items in their current cart.
 	 */
@@ -121,7 +132,7 @@ class ReorderController extends Controller
 		{
 			return $this->asJson([
 				'success' => true,
-				'cart' => $cart,
+				'cart' => $this->cartArray($cart),
 				'unavailable' => $unavailableLineItems,
 			]);
 		}
